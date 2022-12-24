@@ -1,6 +1,11 @@
 ---
-BreakBeforeBraces: Linux
+BasedOnStyle: GNU
+BreakBeforeBraces: Allman
+ColumnLimit: 100
+IndentCaseLabels: true
 IndentWidth: 4
+PointerAlignment: Left
+SpaceBeforeParens: ControlStatements
 TabWidth: 4
 UseCRLF: false
 UseTab: ForIndentation
