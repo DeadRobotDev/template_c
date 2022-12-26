@@ -20,7 +20,7 @@ pub fn build(b: *Builder) !void {
     const target = b.standardTargetOptions(.{});
     const mode = getBuildMode(b);
     const flags = if (mode == .Debug) cflags ++ cflags_debug else cflags;
-    const source_files = try getSourceFiles(b, &.{".c"});
+    const source_files = try getFilesRelativeToCwd(b, "source", &.{".c"});
 
     const exe = b.addExecutable("template", null);
     exe.addIncludePath("include");
@@ -58,9 +58,9 @@ fn getBuildMode(b: *Builder) std.builtin.Mode {
     return mode;
 }
 
-fn getSourceFiles(b: *Builder, allowed_extensions: []const []const u8) !std.ArrayList([]const u8) {
+fn getFilesRelativeToCwd(b: *Builder, sub_path: []const u8, allowed_extensions: []const []const u8) !std.ArrayList([]const u8) {
     var source_files = std.ArrayList([]const u8).init(b.allocator);
-    var dir = try fs.cwd().openIterableDir("source", .{});
+    var dir = try fs.cwd().openIterableDir(sub_path, .{});
     var walker = try dir.walk(b.allocator);
     defer walker.deinit();
 
@@ -73,7 +73,7 @@ fn getSourceFiles(b: *Builder, allowed_extensions: []const []const u8) !std.Arra
         } else false;
 
         if (include_file) {
-            try source_files.append(b.pathJoin(&.{ "source", b.dupePath(entry.path) }));
+            try source_files.append(b.pathJoin(&.{ sub_path, b.dupePath(entry.path) }));
         }
     }
 
