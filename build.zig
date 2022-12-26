@@ -30,8 +30,14 @@ pub fn build(b: *Builder) !void {
     exe.setBuildMode(mode);
     exe.install();
 
+    const run = exe.run();
+
+    if (b.args) |args| {
+        run.addArgs(args);
+    }
+
     const run_step = b.step("run", "Run the executable");
-    run_step.dependOn(&exe.run().step);
+    run_step.dependOn(&run.step);
 }
 
 fn getBuildMode(b: *Builder) std.builtin.Mode {
