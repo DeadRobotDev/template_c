@@ -9,7 +9,8 @@ pub fn build(b: *Builder) !void {
         "-std=c99",
         "-Wall",
         "-Wextra",
-        "-pedantic-errors",
+        "-Wpedantic",
+        "-Werror",
     };
 
     const cflags_debug: []const []const u8 = &.{
