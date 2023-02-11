@@ -20,15 +20,18 @@ pub fn build(b: *Builder) !void {
 
     const target = b.standardTargetOptions(.{});
     const mode = getBuildMode(b);
+    const options = std.build.ExecutableOptions{
+        .name = "template",
+        .target = target,
+        .optimize = mode,
+    };
     const flags = if (mode == .Debug) cflags ++ cflags_debug else cflags;
     const source_files = try getFilesRelativeToCwd(b, "source", &.{".c"});
 
-    const exe = b.addExecutable("template", null);
+    const exe = b.addExecutable(options);
     exe.addIncludePath("include");
     exe.addCSourceFiles(source_files.items, flags);
     exe.linkLibC();
-    exe.setTarget(target);
-    exe.setBuildMode(mode);
     exe.install();
 
     const run = exe.run();
